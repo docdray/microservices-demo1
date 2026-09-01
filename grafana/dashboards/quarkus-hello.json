@@ -162,6 +162,32 @@
   "targets": [
     { "expr": "sum(rate(pg_stat_statements_seconds_total[5m])) / sum(rate(pg_stat_statements_calls_total[5m]))", "legendFormat": "ø Sekunden pro Query", "refId": "A" }
   ]
+},
+{
+  "id": 12,
+  "title": "Kafka Status",
+  "type": "stat",
+  "gridPos": { "h": 4, "w": 6, "x": 12, "y": 16 },
+  "datasource": { "type": "prometheus", "uid": "Prometheus" },
+  "targets": [{ "expr": "up{job=\"kafka\"}", "refId": "A" }],
+  "fieldConfig": {
+    "defaults": {
+      "mappings": [
+        { "type": "value", "options": { "0": { "text": "DOWN", "color": "red" } } },
+        { "type": "value", "options": { "1": { "text": "UP", "color": "green" } } }
+      ]
+    }
+  }
+},
+{
+  "id": 13,
+  "title": "Kafka Nachrichten/s (kafkatest)",
+  "type": "timeseries",
+  "gridPos": { "h": 8, "w": 12, "x": 0, "y": 36 },
+  "datasource": { "type": "prometheus", "uid": "Prometheus" },
+  "targets": [
+    { "expr": "sum(rate(kafka_topic_partition_current_offset{topic=\"kafkatest\"}[1m]))", "legendFormat": "Nachrichten/s", "refId": "A" }
+  ]
 }
   ]
 }
