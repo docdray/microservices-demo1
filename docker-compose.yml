@@ -38,7 +38,16 @@ services:
     networks:
       - backend
     # kein "ports:" nötig – nur intern über APISIX erreichbar
-
+    
+  quarkus-ws-app:
+    image: quarkus2
+    container_name: quarkus_ws_app
+    restart: unless-stopped
+    depends_on:
+      - kafka
+    networks:
+      - backend
+      
   nginx:
     image: nginx:alpine
     container_name: nginx
