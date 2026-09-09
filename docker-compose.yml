@@ -48,6 +48,22 @@ services:
     networks:
       - backend
       
+  quarkus-home-app:
+    image: quarkus3
+    container_name: quarkus_home_app
+    restart: unless-stopped
+    networks:
+      - backend
+
+  quarkus-world-app:
+    image: quarkus4
+    container_name: quarkus_world_app
+    restart: unless-stopped
+    depends_on:
+      - quarkus-home-app
+    networks:
+      - backend
+      
   nginx:
     image: nginx:alpine
     container_name: nginx
