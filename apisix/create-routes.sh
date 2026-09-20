@@ -86,6 +86,24 @@ curl -i "http://localhost:9180/apisix/admin/routes/5" \
     }
   }'
 
+curl -i "http://localhost:9180/apisix/admin/routes/6" \
+  -H "X-API-KEY: edd1c9f034335f136f87ad84b625c8f" \
+  -X PUT \
+  -d '{
+    "uri": "/api/messages*",
+    "upstream": {
+      "type": "roundrobin",
+      "nodes": {
+        "quarkus-app:8080": 1
+      }
+    },
+    "plugins": {
+      "proxy-rewrite": {
+        "regex_uri": ["^/api/messages(.*)", "/messages$1"]
+      }
+    }
+  }'
+
 curl -i "http://localhost:9180/apisix/admin/global_rules/1" \
   -H "X-API-KEY: edd1c9f034335f136f87ad84b625c8f" \
   -X PUT \

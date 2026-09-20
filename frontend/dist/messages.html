@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Nachrichten Verwaltung</title>
+		<script src="messages.js" defer></script>
+		<style>
+			body {
+				font-family: system-ui, sans-serif;
+				max-width: 960px;
+				margin: 2rem auto;
+				padding: 0 1rem;
+				color: #222;
+			}
+			nav a {
+				margin-right: 1rem;
+			}
+			h1 {
+				margin-bottom: 0.25rem;
+			}
+			.filters {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.75rem;
+				align-items: flex-end;
+				margin-bottom: 1rem;
+				border: 1px solid #e5e5e5;
+				border-radius: 6px;
+				padding: 0.75rem;
+			}
+			.filters .field {
+				display: flex;
+				flex-direction: column;
+				font-size: 0.85rem;
+			}
+			.filters .field input {
+				padding: 0.4rem;
+			}
+			.filters .field.search {
+				flex: 1;
+				min-width: 220px;
+			}
+			.filters .field.search input {
+				width: 100%;
+				box-sizing: border-box;
+			}
+			.filters button {
+				padding: 0.45rem 0.9rem;
+			}
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-bottom: 1.5rem;
+			}
+			th, td {
+				text-align: left;
+				padding: 0.4rem 0.5rem;
+				border-bottom: 1px solid #e5e5e5;
+				vertical-align: top;
+			}
+			td.text-cell {
+				white-space: pre-wrap;
+				max-width: 360px;
+			}
+			button {
+				cursor: pointer;
+			}
+			.actions button {
+				margin-right: 0.3rem;
+			}
+			form.entity-form {
+				border: 1px solid #e5e5e5;
+				border-radius: 6px;
+				padding: 1rem;
+				margin-bottom: 1.5rem;
+				max-width: 480px;
+			}
+			form.entity-form label {
+				display: block;
+				margin-top: 0.6rem;
+				font-size: 0.9rem;
+				font-weight: bold;
+			}
+			form.entity-form textarea {
+				width: 100%;
+				padding: 0.4rem;
+				box-sizing: border-box;
+				font-family: inherit;
+				resize: vertical;
+			}
+			.form-actions {
+				margin-top: 1rem;
+				display: flex;
+				gap: 0.5rem;
+			}
+			.status {
+				min-height: 1.4rem;
+				margin-top: 0.5rem;
+				font-size: 0.9rem;
+			}
+			.status.error {
+				color: #b91c1c;
+			}
+			.status.ok {
+				color: #15803d;
+			}
+			.hint {
+				color: #666;
+				font-size: 0.85rem;
+			}
+		</style>
+	</head>
+	<body>
+		<nav>
+			<a href="index.html">&larr; WebSocket Demo</a>
+			<a href="library.html">Bibliothek Verwaltung</a>
+		</nav>
+		<h1>Nachrichten Verwaltung</h1>
+		<p class="hint">Nachrichten suchen, anlegen, ändern und löschen. Suche nach Textinhalt und Filterung nach Erstell- bzw. Änderungsdatum möglich.</p>
+
+		<form id="message-filters" class="filters">
+			<div class="field search">
+				<label for="message-search">Textsuche</label>
+				<input id="message-search" type="text" placeholder="Suche im Nachrichtentext..." />
+			</div>
+			<div class="field">
+				<label for="created-from">Erstellt von</label>
+				<input id="created-from" type="date" />
+			</div>
+			<div class="field">
+				<label for="created-to">Erstellt bis</label>
+				<input id="created-to" type="date" />
+			</div>
+			<div class="field">
+				<label for="updated-from">Geändert von</label>
+				<input id="updated-from" type="date" />
+			</div>
+			<div class="field">
+				<label for="updated-to">Geändert bis</label>
+				<input id="updated-to" type="date" />
+			</div>
+			<button type="submit" id="message-filter-btn">Filtern</button>
+			<button type="button" id="message-filter-reset-btn">Zurücksetzen</button>
+		</form>
+
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Text</th>
+					<th>Erstellt am</th>
+					<th>Geändert am</th>
+					<th>Aktionen</th>
+				</tr>
+			</thead>
+			<tbody id="message-table-body"></tbody>
+		</table>
+
+		<h2 id="message-form-title">Neue Nachricht anlegen</h2>
+		<form id="message-form" class="entity-form">
+			<label for="message-text">Text</label>
+			<textarea id="message-text" rows="4" required></textarea>
+
+			<div class="form-actions">
+				<button type="submit" id="message-submit-btn">Anlegen</button>
+				<button type="button" id="message-cancel-btn" hidden>Abbrechen</button>
+			</div>
+			<div id="message-status" class="status"></div>
+		</form>
+	</body>
+</html>
