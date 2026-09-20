@@ -126,7 +126,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire-plugin.version}</version>
                 <configuration>
-                    <argLine>@{argLine}</argLine>
+                    <!-- sqlite-jdbc lädt eine native Bibliothek per System.load(); ab JDK 22+ warnt
+                         das ohne dieses Flag (JEP 472). -->
+                    <argLine>@{argLine} --enable-native-access=ALL-UNNAMED</argLine>
                     <systemPropertyVariables>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <maven.home>${maven.home}</maven.home>
@@ -145,7 +147,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <argLine>@{argLine}</argLine>
+                    <argLine>@{argLine} --enable-native-access=ALL-UNNAMED</argLine>
                     <systemPropertyVariables>
                         <native.image.path>${project.build.directory}/${project.build.finalName}-runner
                         </native.image.path>
