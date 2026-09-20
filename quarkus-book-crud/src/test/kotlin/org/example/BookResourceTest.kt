@@ -75,6 +75,26 @@ class BookResourceTest {
     }
 
     @Test
+    fun testNotFoundForUnknownId() {
+        given()
+            .`when`().get("/books/999999")
+            .then()
+            .statusCode(404)
+
+        given()
+            .contentType(ContentType.JSON)
+            .body("""{"title":"Irgendein Titel","isbn":"9783161484199","authorIds":[1]}""")
+            .`when`().put("/books/999999")
+            .then()
+            .statusCode(404)
+
+        given()
+            .`when`().delete("/books/999999")
+            .then()
+            .statusCode(404)
+    }
+
+    @Test
     fun testMissingAuthorsRejected() {
         given()
             .contentType(ContentType.JSON)

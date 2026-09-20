@@ -53,6 +53,26 @@ class AuthorResourceTest {
     }
 
     @Test
+    fun testNotFoundForUnknownId() {
+        given()
+            .`when`().get("/authors/999999")
+            .then()
+            .statusCode(404)
+
+        given()
+            .contentType(ContentType.JSON)
+            .body("""{"firstName":"Ada","lastName":"Lovelace","birthDate":"1815-12-10"}""")
+            .`when`().put("/authors/999999")
+            .then()
+            .statusCode(404)
+
+        given()
+            .`when`().delete("/authors/999999")
+            .then()
+            .statusCode(404)
+    }
+
+    @Test
     fun testValidation() {
         given()
             .contentType(ContentType.JSON)

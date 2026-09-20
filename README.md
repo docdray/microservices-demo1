@@ -17,6 +17,19 @@ $ ./apisix/create-routes.sh
 
 
 
+## Tests
+
+Tests aller Quarkus-Services ausführen (mit zusammenfassender Übersicht am Ende)
+
+$ ./run-tests.sh
+
+Nur Services testen, deren Verzeichnisname zum Filter passt, z.B. nur kotlin1
+
+$ ./run-tests.sh kotlin1
+
+Detaillierte Reports je Service liegen danach unter `<service>/target/surefire-reports/`.
+
+
 ## Services
 
 Webseite
