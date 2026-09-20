@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Bibliothek Verwaltung</title>
+		<script src="library.js" defer></script>
+		<style>
+			body {
+				font-family: system-ui, sans-serif;
+				max-width: 960px;
+				margin: 2rem auto;
+				padding: 0 1rem;
+				color: #222;
+			}
+			nav a {
+				margin-right: 1rem;
+			}
+			h1 {
+				margin-bottom: 0.25rem;
+			}
+			.tabs {
+				display: flex;
+				gap: 0.5rem;
+				margin: 1.5rem 0 1rem;
+				border-bottom: 1px solid #ccc;
+			}
+			.tabs button {
+				padding: 0.5rem 1rem;
+				border: none;
+				background: none;
+				cursor: pointer;
+				font-size: 1rem;
+				border-bottom: 3px solid transparent;
+			}
+			.tabs button.active {
+				border-bottom-color: #2563eb;
+				font-weight: bold;
+			}
+			.panel {
+				display: none;
+			}
+			.panel.active {
+				display: block;
+			}
+			.search-row {
+				display: flex;
+				gap: 0.5rem;
+				margin-bottom: 1rem;
+			}
+			.search-row input {
+				flex: 1;
+				padding: 0.4rem;
+			}
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-bottom: 1.5rem;
+			}
+			th, td {
+				text-align: left;
+				padding: 0.4rem 0.5rem;
+				border-bottom: 1px solid #e5e5e5;
+			}
+			button {
+				cursor: pointer;
+			}
+			.actions button {
+				margin-right: 0.3rem;
+			}
+			form.entity-form {
+				border: 1px solid #e5e5e5;
+				border-radius: 6px;
+				padding: 1rem;
+				margin-bottom: 1.5rem;
+				max-width: 480px;
+			}
+			form.entity-form label {
+				display: block;
+				margin-top: 0.6rem;
+				font-size: 0.9rem;
+				font-weight: bold;
+			}
+			form.entity-form input {
+				width: 100%;
+				padding: 0.4rem;
+				box-sizing: border-box;
+			}
+			.form-actions {
+				margin-top: 1rem;
+				display: flex;
+				gap: 0.5rem;
+			}
+			.author-picker {
+				position: relative;
+			}
+			.suggestions {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				position: absolute;
+				z-index: 10;
+				background: white;
+				border: 1px solid #ccc;
+				width: 100%;
+				max-height: 160px;
+				overflow-y: auto;
+			}
+			.suggestions li {
+				padding: 0.4rem;
+				cursor: pointer;
+			}
+			.suggestions li:hover {
+				background: #f0f4ff;
+			}
+			.chips {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.4rem;
+				margin-top: 0.5rem;
+			}
+			.chip {
+				background: #eef2ff;
+				border: 1px solid #c7d2fe;
+				border-radius: 999px;
+				padding: 0.2rem 0.6rem;
+				font-size: 0.85rem;
+				display: flex;
+				align-items: center;
+				gap: 0.4rem;
+			}
+			.chip button {
+				border: none;
+				background: none;
+				color: #b91c1c;
+				font-weight: bold;
+			}
+			.status {
+				min-height: 1.4rem;
+				margin-top: 0.5rem;
+				font-size: 0.9rem;
+			}
+			.status.error {
+				color: #b91c1c;
+			}
+			.status.ok {
+				color: #15803d;
+			}
+			.hint {
+				color: #666;
+				font-size: 0.85rem;
+			}
+		</style>
+	</head>
+	<body>
+		<nav>
+			<a href="index.html">&larr; WebSocket Demo</a>
+		</nav>
+		<h1>Bibliothek Verwaltung</h1>
+		<p class="hint">Bücher und Autoren suchen, anlegen, ändern und löschen.</p>
+
+		<div class="tabs">
+			<button id="tab-books" class="active" data-tab="books">Bücher</button>
+			<button id="tab-authors" data-tab="authors">Autoren</button>
+		</div>
+
+		<section id="panel-books" class="panel active">
+			<div class="search-row">
+				<input id="book-search" type="text" placeholder="Suche nach Titel oder ISBN..." />
+				<button id="book-search-btn">Suchen</button>
+			</div>
+
+			<table>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Titel</th>
+						<th>ISBN</th>
+						<th>Autoren</th>
+						<th>Aktionen</th>
+					</tr>
+				</thead>
+				<tbody id="book-table-body"></tbody>
+			</table>
+
+			<h2 id="book-form-title">Neues Buch anlegen</h2>
+			<form id="book-form" class="entity-form">
+				<label for="book-title">Titel</label>
+				<input id="book-title" type="text" required />
+
+				<label for="book-isbn">ISBN</label>
+				<input id="book-isbn" type="text" required placeholder="z.B. 9783161484100" />
+
+				<label for="author-search">Autor hinzufügen</label>
+				<div class="author-picker">
+					<input id="author-search" type="text" placeholder="Autorenname eingeben..." autocomplete="off" />
+					<ul id="author-suggestions" class="suggestions" hidden></ul>
+				</div>
+				<div id="book-author-chips" class="chips"></div>
+
+				<div class="form-actions">
+					<button type="submit" id="book-submit-btn">Anlegen</button>
+					<button type="button" id="book-cancel-btn" hidden>Abbrechen</button>
+				</div>
+				<div id="book-status" class="status"></div>
+			</form>
+		</section>
+
+		<section id="panel-authors" class="panel">
+			<div class="search-row">
+				<input id="author-search-list" type="text" placeholder="Suche nach Vor- oder Nachname..." />
+				<button id="author-search-btn">Suchen</button>
+			</div>
+
+			<table>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Vorname</th>
+						<th>Nachname</th>
+						<th>Geburtsdatum</th>
+						<th>Aktionen</th>
+					</tr>
+				</thead>
+				<tbody id="author-table-body"></tbody>
+			</table>
+
+			<h2 id="author-form-title">Neuen Autor anlegen</h2>
+			<form id="author-form" class="entity-form">
+				<label for="author-first-name">Vorname</label>
+				<input id="author-first-name" type="text" required />
+
+				<label for="author-last-name">Nachname</label>
+				<input id="author-last-name" type="text" required />
+
+				<label for="author-birth-date">Geburtsdatum</label>
+				<input id="author-birth-date" type="date" required />
+
+				<div class="form-actions">
+					<button type="submit" id="author-submit-btn">Anlegen</button>
+					<button type="button" id="author-cancel-btn" hidden>Abbrechen</button>
+				</div>
+				<div id="author-status" class="status"></div>
+			</form>
+		</section>
+	</body>
+</html>

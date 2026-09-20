@@ -188,6 +188,58 @@
   "targets": [
     { "expr": "sum(rate(kafka_topic_partition_current_offset{topic=\"kafkatest\"}[1m]))", "legendFormat": "Nachrichten/s", "refId": "A" }
   ]
+},
+{
+  "id": 14,
+  "title": "Book CRUD Status",
+  "type": "stat",
+  "gridPos": { "h": 4, "w": 6, "x": 0, "y": 44 },
+  "datasource": { "type": "prometheus", "uid": "Prometheus" },
+  "targets": [{ "expr": "up{job=\"quarkus-book-crud\"}", "refId": "A" }],
+  "fieldConfig": {
+    "defaults": {
+      "mappings": [
+        { "type": "value", "options": { "0": { "text": "DOWN", "color": "red" } } },
+        { "type": "value", "options": { "1": { "text": "UP", "color": "green" } } }
+      ]
+    }
+  }
+},
+{
+  "id": 15,
+  "title": "Author CRUD Status",
+  "type": "stat",
+  "gridPos": { "h": 4, "w": 6, "x": 6, "y": 44 },
+  "datasource": { "type": "prometheus", "uid": "Prometheus" },
+  "targets": [{ "expr": "up{job=\"quarkus-author-crud\"}", "refId": "A" }],
+  "fieldConfig": {
+    "defaults": {
+      "mappings": [
+        { "type": "value", "options": { "0": { "text": "DOWN", "color": "red" } } },
+        { "type": "value", "options": { "1": { "text": "UP", "color": "green" } } }
+      ]
+    }
+  }
+},
+{
+  "id": 16,
+  "title": "Requests pro Sekunde (/books)",
+  "type": "timeseries",
+  "gridPos": { "h": 8, "w": 12, "x": 0, "y": 48 },
+  "datasource": { "type": "prometheus", "uid": "Prometheus" },
+  "targets": [
+    { "expr": "sum(rate(http_server_requests_seconds_count{uri=~\"/books.*\"}[1m]))", "legendFormat": "req/s", "refId": "A" }
+  ]
+},
+{
+  "id": 17,
+  "title": "Requests pro Sekunde (/authors)",
+  "type": "timeseries",
+  "gridPos": { "h": 8, "w": 12, "x": 12, "y": 48 },
+  "datasource": { "type": "prometheus", "uid": "Prometheus" },
+  "targets": [
+    { "expr": "sum(rate(http_server_requests_seconds_count{uri=~\"/authors.*\"}[1m]))", "legendFormat": "req/s", "refId": "A" }
+  ]
 }
   ]
 }

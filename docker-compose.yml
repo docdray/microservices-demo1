@@ -64,6 +64,26 @@ services:
     networks:
       - backend
       
+  quarkus-book-crud:
+    image: quarkus5
+    container_name: quarkus_book_crud
+    restart: unless-stopped
+    depends_on:
+      - quarkus-author-crud
+    volumes:
+      - book_data:/deployments/data
+    networks:
+      - backend
+
+  quarkus-author-crud:
+    image: quarkus6
+    container_name: quarkus_author_crud
+    restart: unless-stopped
+    volumes:
+      - author_data:/deployments/data
+    networks:
+      - backend
+      
   nginx:
     image: nginx:alpine
     container_name: nginx
@@ -186,6 +206,8 @@ volumes:
   prometheus_data:
   grafana_data:
   kafka_data:
+  book_data:
+  author_data:
 
 networks:
   backend:

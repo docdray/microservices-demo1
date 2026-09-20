@@ -19,3 +19,13 @@ scrape_configs:
   - job_name: 'kafka'
     static_configs:
       - targets: ['kafka-exporter:9308']
+
+  - job_name: 'quarkus-book-crud'
+    metrics_path: '/q/metrics'
+    static_configs:
+      - targets: ['quarkus-book-crud:8080']
+
+  - job_name: 'quarkus-author-crud'
+    metrics_path: '/q/metrics'
+    static_configs:
+      - targets: ['quarkus-author-crud:8080']
